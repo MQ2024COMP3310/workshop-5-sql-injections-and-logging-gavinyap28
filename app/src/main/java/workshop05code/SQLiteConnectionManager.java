@@ -125,17 +125,24 @@ public class SQLiteConnectionManager {
      * @param id   the unique id for the word
      * @param word the word to store
      */
-    public void addValidWord(int id, String word) {
+     public void addValidWord(int id, String word) {
+        // Define the SQL query with placeholders for the id and word parameters
+        String sql = "INSERT INTO validWords (id, word) VALUES (?, ?)";
 
-        String sql = "INSERT INTO validWords(id,word) VALUES('" + id + "','" + word + "')";
-
+        // Try-with-resources statement to ensure proper resource management
         try (Connection conn = DriverManager.getConnection(databaseURL);
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            // Set the id using setInt to ensure the input is an integer
+            pstmt.setInt(1, id);
+            // Set the word using setString
+            pstmt.setString(2, word);
+
+            // Execute the update
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            // Log the exception
+            System.err.println("SQL Exception: " + e.getMessage());
         }
-
     }
 
     /**
